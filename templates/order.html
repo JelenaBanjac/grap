@@ -1,0 +1,151 @@
+<html>
+   <head>
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://bootswatch.com/4/sandstone/bootstrap.min.css">
+		
+      <!-- jQuery library -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+      <!-- Icons -->
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css">
+      
+      <!-- Favicon -->
+      <link rel="shortcut icon" type="image/png" href="img/penkalo.png"/>
+      
+   </head>
+   <body>
+      <div class="container">
+         <br />
+         <h1>Nova porudžbina</h1>
+
+         <br />
+         <form action = "/overview" method="POST">
+
+            <div class="form-group">
+               <label class="col-form-label" for="nazivPravnogLica">Naziv pravnog lica *</label>
+               <input type="text" class="form-control" name="nazivPravnogLica" id="nazivPravnogLica" required>
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="APRNazivPravnogLica">APR naziv pravnog lica *</label>
+               <input type="text" class="form-control" name="APRNazivPravnogLica" id="APRNazivPravnogLica">
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="Adresa">Adresa *</label>
+               <input type="text" class="form-control" name="Adresa" id="Adresa">
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="Pib">PIB *</label>
+               <input type="text" class="form-control" name="Pib" id="Pib">
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="BrojTelefona">Broj telefona *</label>
+               <input type="text" class="form-control" name="BrojTelefona" id="BrojTelefona">
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="Email">E-mail *</label>
+               <input type="text" class="form-control" name="Email" id="Email">
+            </div>
+   
+            <div class="form-group">
+               <label class="col-form-label" for="Placanje">Plaćanje *</label>
+               <div class="custom-control custom-radio">
+                  <input type="radio" id="Placanje" name="Placanje" class="custom-control-input" checked="">
+                  <label class="custom-control-label" for="Placanje">Gotovina</label>
+               </div>
+               <div class="custom-control custom-radio">
+                  <input type="radio" id="Placanje" name="Placanje" class="custom-control-input">
+                  <label class="custom-control-label" for="Placanje">Avans</label>
+               </div>
+            </div>
+   
+            <div class="form-group">
+               <label for="Napomena">Napomena *</label>
+               <textarea class="form-control" name="Napomena" id="Napomena" rows="3"></textarea>
+            </div>
+
+            <br/>
+
+            <div class="form-group">
+               <table class="table table-hover">
+                  <thead>
+                     <tr class="table-primary">
+                        <th scope="col">Redni broj</th>
+                        <th scope="col">Naziv artikla</th>
+                        <th scope="col">Cena</th>
+                        <th scope="col">Komada</th>
+                        <th scope="col">Iznos</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {% for article in articles %}
+                        <tr>
+                           <th> {{ article['Id'] }}. </th>
+                           <td> {{ article['Naziv'] }} </td>
+                           <td> <!-- <p name="Cena_{{ loop.index }}" id="Cena_{{ loop.index }}">{{ article["Cena"] }}</p>,00 RSD -->
+                              <div class="input-group mb-3">
+                                 <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" disabled name="Cena_{{ article['Id'] }}" id="Cena_{{ article['Id'] }}" value={{ article["Cena"] }} >
+                                 <div class="input-group-append"><span class="input-group-text">RSD</span> </div>
+                              </div>
+                           </td>
+                           <td><input name="Komada_{{ article['Id'] }}" id="Komada_{{ article['Id'] }}" class="form-control" value="0" type="number" min="0"/></td>
+                           <td><div class="input-group mb-3">
+                              <input name="Iznos_{{ article['Id'] }}" id="Iznos_{{ article['Id'] }}" type="text" class="form-control" aria-label="Amount" disabled value=0>
+                              <div class="input-group-append"><span class="input-group-text">RSD</span> </div>
+                           </div></td>
+                        </tr>
+                     {% endfor %}
+                     <tr>
+                        <th> </th>
+                        <th> </th>
+                        <th> </th>
+                        <th> Ukupno </th>
+                        <td><div class="input-group mb-3">
+                           <input name="Ukupno" id="Ukupno" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" disabled value=0>
+                           <div class="input-group-append"><span class="input-group-text">RSD</span> </div>
+                        </div></td>
+                     </tr>
+                  </tbody>
+               </table>
+
+               <button type="submit" class="btn btn-primary">Poruči</button>
+               <button type="button" class="btn btn-secondary" onclick="alert('This button does nothing.')">Odustani</button>
+
+            </div>
+         </form>
+      </div>
+
+      <p id="demo"></p>
+
+      <script>
+
+         Array.from(Array({{articles|length}}).keys()).forEach(i => {
+            i = i + 1;
+            document.getElementById('Komada_'+i).addEventListener("input", function (evt) {
+               console.log("Cena_"+i);
+               console.log(document.getElementById("Cena_"+i).value);
+               document.getElementById("Iznos_"+i).value = document.getElementById("Cena_"+i).value * this.value
+
+               summarize()
+            });
+         });
+
+         function summarize() {
+            total_sum = 0
+            for (i = 1; i <= {{articles|length}}; i++) {
+               console.log(total_sum)
+               total_sum += parseInt(document.getElementById("Iznos_"+i).value);
+            }
+            document.getElementById("Ukupno").value = total_sum
+         }
+
+        
+      </script>
+   </body>
+</html>
