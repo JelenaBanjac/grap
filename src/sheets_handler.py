@@ -4,8 +4,8 @@ import urllib.request
 import json
 import os
 
-
-SHEET_TOKEN_PATH = 'Quickstart-f94184934ce3.json'
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+SHEET_TOKEN_PATH = os.path.join(ROOT_DIR, 'Quickstart-f94184934ce3.json')
 SHEET_ID_WRITE = '1e2b5z2ydOKQBLGvgNfbBUbGv1C09UUG2KQBCiOJUkeo'
 SHEET_ID_READ = '1BsNMbjRzqzWhZ0ODWR0Bw1w46bJgKYPyvfIz2YFB-DM'
 

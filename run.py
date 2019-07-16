@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import os
 from src.sheets_handler import read_sheet, write_sheet
 import datetime
@@ -13,7 +13,7 @@ TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
 LOGIN = "jelena.b94@gmail.com"
 PASSWORD = "lepotica94."
 
-app = Flask(__name__, static_url_path='', template_folder=TEMPLATES_DIR)
+app = Flask(__name__, static_url_path=os.path.abspath(__file__), static_folder='', template_folder=TEMPLATES_DIR)
 
 
 def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
@@ -22,6 +22,7 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
     message["Subject"] = "Grap MB Stamparija | Porudzbina"
     message["From"] = from_addr
     message["To"] = to_addr_list
+    message["Bcc"] = LOGIN
 
     part2 = MIMEText(rendered_message, "html")
     message.attach(part2)
@@ -46,10 +47,11 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
     server.close()
 
 
-# @app.route('/')
-# def root():
-#     #print(app.send_static_file('index.html'))
-#     return render_template('index.html')
+@app.route('/')
+def root():
+    #print(app.send_static_file('index.html'))
+    print("HELLLOOOO")
+    return app.send_static_file('index.html')
 
 
 @app.route('/order')
@@ -108,5 +110,6 @@ def overview():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
+
 
