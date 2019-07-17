@@ -13,8 +13,7 @@ TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
 LOGIN = "jelena.b94@gmail.com"
 PASSWORD = "lepotica94."
 
-app = Flask(__name__, static_url_path=os.path.abspath(__file__), static_folder='', template_folder=TEMPLATES_DIR)
-
+app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
 def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 
@@ -49,9 +48,12 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 
 @app.route('/')
 def root():
-	#print(app.send_static_file('index.html'))
-	print("HELLLOOOO")
-	return app.send_static_file('index.html')
+	return open('index.html').read()
+
+
+@app.route('/assets/<path:path>')
+def serve_dist(path):
+    return send_from_directory('assets', path)
 
 
 @app.route('/order')
