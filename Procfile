@@ -1,2 +1,2 @@
-requs: pip install -r requirements.txt
-web: python run.py
+requs: pip3 install -r requirements.txt
+web: python3 run.py
