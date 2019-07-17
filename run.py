@@ -26,7 +26,7 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 	part2 = MIMEText(rendered_message, "html")
 	message.attach(part2)
 
-	fp = open('../assets/img/logo.png', 'rb')
+	fp = open('assets/img/logo.png', 'rb')
 	msgImage = MIMEImage(fp.read())
 	fp.close()
 	msgImage.add_header('Content-ID', '<image1>')
