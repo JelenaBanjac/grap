@@ -106,7 +106,7 @@ def overview():
 
 		print(order)
 		rendered_template_email = render_template("bill.html", order=order)
-		sendemail(from_addr=LOGIN, to_addr_list=LOGIN, cc_addr_list=[], subject="Test", rendered_message=rendered_template_email)
+		sendemail(from_addr=LOGIN, to_addr_list=order['Email'], cc_addr_list=[], subject="Test", rendered_message=rendered_template_email)
 
 		return render_template('confirmation.html', email=order['Email'])
 
