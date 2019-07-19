@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 import os
-from src.sheets_handler import read_sheet, write_sheet
+from src.sheets_handler import read_sheet
 import datetime
 import time
 import smtplib, ssl
@@ -10,15 +10,17 @@ from email.mime.image import MIMEImage
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
-LOGIN = "jelena.b94@gmail.com"
-PASSWORD = "lepotica94."
+#LOGIN = "jelena.b94@gmail.com"
+#PASSWORD = "lepotica94."
+LOGIN = "grap.noreply@gmail.com"
+PASSWORD = "grapbanjac38."
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
 def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 
 	message = MIMEMultipart("alternative")
-	message["Subject"] = "Grap MB Stamparija | Porudzbina"
+	message["Subject"] = "Grap MB Štamparija | Porudžbina"
 	message["From"] = from_addr
 	message["To"] = to_addr_list
 	message["Bcc"] = LOGIN
