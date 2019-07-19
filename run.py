@@ -103,7 +103,7 @@ def overview():
 						  'BrojTelefona':  overview['BrojTelefona'],
 						  'Email':  overview['Email'],}
 
-		order['Placanje'] = 'Gotovina' if overview['Placanje'] == 'on' else 'Avans'
+		order['Placanje'] = overview['Placanje']
 
 		order['Logo'] = "cid:image1"
 
