@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory
 import os
-from src.sheets_handler import read_sheet
+from src.sheets_handler import read_sheet, write_sheet
 import datetime
 import time
 import smtplib, ssl
@@ -110,6 +110,12 @@ def overview():
 		print(order)
 		rendered_template_email = render_template("bill.html", order=order)
 		sendemail(from_addr=LOGIN, to_addr_list=order['Email'], cc_addr_list=[], subject="Test", rendered_message=rendered_template_email)
+
+		# add to database
+		for article in order['Artikli']:
+			row = [order['BrojPorudzbenice'], order['Kupac']['nazivPravnogLica'], order['Kupac']['APRNazivPravnogLica'], order['Kupac']['Adresa'], order['Kupac']['Pib'], order['Kupac']['BrojTelefona'], order['Kupac']['Email'], order['Placanje'], order['Datum'],
+				   article['Id'], article['Cena'], article['Komada'], article['Iznos']]
+			write_sheet(row)
 
 		return render_template('confirmation.html', email=order['Email'])
 
