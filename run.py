@@ -14,6 +14,7 @@ TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
 #PASSWORD = "lepotica94."
 LOGIN = "grap.noreply@gmail.com"
 PASSWORD = "grapbanjac38."
+CENA_USLUGE = 60
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
@@ -84,7 +85,7 @@ def overview():
 			if float(article['Komada']) >= 1:
 				order['Artikli'].append(article)
 
-		order['Ukupno'] = f"{sum([float(article['Iznos']) for article in articles]):.2f}"
+		order['Ukupno'] = f"{sum([float(article['Iznos']) for article in articles]) + CENA_USLUGE:.2f}"
 
 		# add also address and other info
 		for key, value in overview.items():
