@@ -108,12 +108,12 @@
                         <tr>
                             <td class="title">
                                 <!-- <img src="https://github.com/JelenaBanjac/grap/blob/master/img/logo.png?raw=true" style="width:100%; max-width:300px;"> -->
-                                <img src="{{order['Logo']}}" style="width:100%; max-width:300px;">
+                                <img src="assets/img/logo.png" style="width:100%; max-width:300px;">
                             </td>
                             <td></td>
                             <td>
-                                Porudžbenica №{{ order['BrojPorudzbenice'] }}<br>
-                                Datum: {{ order['Datum'] }}<br>
+                                Porudžbenica №1563900479<br>
+                                Datum: 2019-07-23 18:47:59<br>
                             </td>
                         </tr>
                     </table>
@@ -151,7 +151,7 @@
             
             <tr class="details">
                 <td>
-                    {{ order['Placanje'] }}
+                    Bezgotovinski
                 </td>
                 <td></td>
                 <td></td>
@@ -167,21 +167,21 @@
 
             <tr class="details">
                 <td>
-                    {{ order['Kupac']['nazivPravnogLica'] }}
+                    Jelena
                     <br/>
-                    APR: {{ order['Kupac']['APRNazivPravnogLica'] }}
+                    APR: 123
                     <br/>
-                    PIB: {{ order['Kupac']['Pib'] }}
+                    PIB: 213
                     <br/>
-                    {{ order['Kupac']['PostanskiBroj'] }}, {{ order['Kupac']['Grad'] }}
+                    2312, Apatin
                     <br/>
-                    {{ order['Kupac']['Ulica'] }}
+                    Prvomajsko 32
                     <br/>
-                    {{ order['Kupac']['FiksniTelefon'] }}
+                    12312
                     <br/>
-                    {{ order['Kupac']['MobilniTelefon'] }}
+                    76
                     <br/>
-                    {{ order['Kupac']['Email'] }}
+                    msjelenabanjac@gmail.com
 
                 </td>
                 <td></td>
@@ -189,25 +189,7 @@
             </tr>
 
 
-            {% if order['Kupac']['Napomena'] %}
-            <tr class="heading">
-                <td>
-                    Napomena
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr class="details">
-                <td>
-                    {{ order['Kupac']['Napomena'] }}
-
-                </td>
-                <td></td>
-                <td>
-                    <!-- 1000 -->
-                </td>
-            </tr>
-            {% endif %}
+            
             
             <tr class="heading">
                 <td>
@@ -222,28 +204,28 @@
             </tr>
 
 
-            {% for article in order['Artikli'] %}
+            
             <tr class="item">
                 <td>
-                    {{ article['Naziv'] }}
+                    Bodovna lista za kategorije - &#34;F&#34; kategorije - obrazac br.6f
                 </td>
 
                 <td>
-                    x {{ article['Komada'] }}
+                    x 2
                 </td>
 
                 <td>
-                    {{ article['Iznos'] }}
+                    720.00
                 </td>
             </tr>
-            {% endfor %}
+            
             
             <tr class="total">
                 <td></td>
                 <td></td>
                 
                 <td>
-                   Ukupno: {{ order['Ukupno'] }}
+                   Ukupno: 720.00
                 </td>
             </tr>
         </table>

@@ -43,18 +43,30 @@
             </div>
    
             <div class="form-group">
-               <label class="col-form-label" for="Adresa">Adresa *</label>
-               <input type="text" class="form-control" name="Adresa" id="Adresa" required>
+               <label class="col-form-label" for="Grad">Grad *</label>
+               <input type="text" class="form-control" name="Grad" id="Grad" required>
+            </div>
+            <div class="form-group">
+               <label class="col-form-label" for="PostanskiBroj">Poštanski broj *</label>
+               <input type="text" class="form-control" name="PostanskiBroj" id="PostanskiBroj" required>
+            </div>
+            <div class="form-group">
+               <label class="col-form-label" for="Ulica">Ulica i broj *</label>
+               <input type="text" class="form-control" name="Ulica" id="Ulica" required>
             </div>
    
             <div class="form-group">
                <label class="col-form-label" for="Pib">PIB *</label>
                <input type="text" class="form-control" name="Pib" id="Pib" required>
             </div>
-   
+
             <div class="form-group">
-               <label class="col-form-label" for="BrojTelefona">Broj telefona *</label>
-               <input type="text" class="form-control" name="BrojTelefona" id="BrojTelefona" required>
+               <label class="col-form-label" for="FiksniTelefon">Fiksni broj telefona *</label>
+               <input type="text" class="form-control" name="FiksniTelefon" id="FiksniTelefon" required>
+            </div>
+            <div class="form-group">
+               <label class="col-form-label" for="MobilniTelefon">Mobilni broj telefona *</label>
+               <input type="text" class="form-control" name="MobilniTelefon" id="MobilniTelefon" required>
             </div>
    
             <div class="form-group">
@@ -65,12 +77,12 @@
             <div class="form-group">
                <label class="col-form-label">Plaćanje *</label>
                <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" id="Placanje" name="Placanje" value="Gotovina" checked>
-                  <label class="custom-control-label" for="Placanje">Gotovina</label>
+                  <input type="radio" class="custom-control-input" name="Placanje" id="Bezgotovinski" value="Bezgotovinski" checked>
+                  <label class="custom-control-label" for="Bezgotovinski">Bezgotovinski - preko računa (avans)</label>
                </div>
                <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" id="PlacanjeAvans" name="Placanje" value="Avans">
-                  <label class="custom-control-label" for="PlacanjeAvans">Avans</label>
+                  <input type="radio" class="custom-control-input" name="Placanje" id="Gotovinski" value="Gotovinski">
+                  <label class="custom-control-label" for="Gotovinski">Gotovinski - pouzećem</label>
                </div>
             </div>
    
@@ -117,7 +129,6 @@
                         <th> Ukupno </th>
                         <td><div class="input-group mb-3">
                            <input name="Ukupno" id="Ukupno" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" disabled value=0>
-                           <div class="input-group-append"><span class="input-group-text">+ 60</span> </div>
                            <div class="input-group-append"><span class="input-group-text">RSD</span> </div>
                         </div></td>
                      </tr>

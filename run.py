@@ -1,20 +1,21 @@
 from flask import Flask, render_template, request, send_from_directory
 import os
 from src.sheets_handler import read_sheet, write_sheet
-import datetime
+from datetime import datetime
 import time
 import smtplib, ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+from email.mime.base import MIMEBase
+from weasyprint import HTML
+from email import encoders
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
-#LOGIN = "jelena.b94@gmail.com"
-#PASSWORD = "lepotica94."
 LOGIN = "grap.noreply@gmail.com"
 PASSWORD = "grapbanjac38."
-CENA_USLUGE = 60
+LOGO_PATH = "assets/img/logo.png"
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
@@ -24,16 +25,33 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 	message["Subject"] = "Grap MB Štamparija | Porudžbina"
 	message["From"] = from_addr
 	message["To"] = to_addr_list
-	message["Bcc"] = LOGIN
+	message["Cc"] = "grap.noreply@gmail.com;grapmb@gmail.com"
 
 	part2 = MIMEText(rendered_message, "html")
 	message.attach(part2)
 
-	fp = open('assets/img/logo.png', 'rb')
-	msgImage = MIMEImage(fp.read())
-	fp.close()
-	msgImage.add_header('Content-ID', '<image1>')
-	message.attach(msgImage)
+	# attach image
+	with open(LOGO_PATH, 'rb') as fp:
+		part_img = MIMEImage(fp.read())
+	part_img.add_header('Content-ID', '<image1>')
+	message.attach(part_img)
+
+	# attach file
+	filename = 'GrapMB-Racun.pdf' 
+    # Open PDF file in binary mode
+	with open(filename, "rb") as attachment:
+		part_pdf = MIMEBase("application", "octet-stream")
+		part_pdf.set_payload(attachment.read())
+    # Encode file in ASCII characters to send by email    
+	encoders.encode_base64(part_pdf)
+    # Add header as key/value pair to attachment part
+	part_pdf.add_header(
+        "Content-Disposition",
+        f"attachment; filename= {filename}",
+    )
+	message.attach(part_pdf)
+
+	message = message.as_string()
 
 	# Create a secure SSL context
 	context = ssl.create_default_context()
@@ -44,7 +62,7 @@ def sendemail(from_addr, to_addr_list, cc_addr_list, subject, rendered_message):
 	server.starttls(context=context)
 	server.ehlo()
 	server.login(LOGIN, PASSWORD)
-	message = message.as_string()
+
 	server.sendmail(from_addr, to_addr_list, message)
 	server.close()
 
@@ -85,38 +103,49 @@ def overview():
 			if float(article['Komada']) >= 1:
 				order['Artikli'].append(article)
 
-		order['Ukupno'] = f"{sum([float(article['Iznos']) for article in articles]) + CENA_USLUGE:.2f}"
+		order['Ukupno'] = f"{sum([float(article['Iznos']) for article in articles]):.2f}"
 
 		# add also address and other info
 		for key, value in overview.items():
 			if not key.startswith('Komada'):
 				order[key] = value
-		order['Datum'] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+		order['Datum'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 		order['BrojPorudzbenice'] = int(time.time())
 
 		order['Kupac'] = {}
 		order['Kupac'] = {'nazivPravnogLica':overview['nazivPravnogLica'],
 						  'APRNazivPravnogLica':  overview['APRNazivPravnogLica'],
-						  'Adresa':  overview['Adresa'],
+						  'Grad':  overview['Grad'],
+						  'PostanskiBroj':  overview['PostanskiBroj'],
+						  'Ulica':  overview['Ulica'],
 						  'Pib':  overview['Pib'],
-						  'BrojTelefona':  overview['BrojTelefona'],
+						  'FiksniTelefon':  overview['FiksniTelefon'],
+						  'MobilniTelefon':  overview['MobilniTelefon'],
 						  'Email':  overview['Email'],}
 
-		if overview['Placanje'] in ['Avans', 'Gotovina']:
+		if overview['Placanje'] in ['Bezgotovinski', 'Gotovinski']:
 			order['Placanje'] = overview['Placanje']
 		else:
-			order['Placanje'] = 'Gotovina'
+			order['Placanje'] = 'Bezgotovinski'
+
+		order['Logo'] = LOGO_PATH
+		rendered_template_pdf = render_template("bill.html", order=order)
+		with open('racun.html', 'w') as f:
+			f.write(rendered_template_pdf)
+		pdf = HTML(filename='racun.html')
+		pdf.write_pdf('GrapMB-Racun.pdf')
 
 		order['Logo'] = "cid:image1"
-
-		print(order)
 		rendered_template_email = render_template("bill.html", order=order)
+
 		sendemail(from_addr=LOGIN, to_addr_list=order['Email'], cc_addr_list=[], subject="Test", rendered_message=rendered_template_email)
 
 		# add to database
 		for article in order['Artikli']:
-			row = [order['BrojPorudzbenice'], order['Kupac']['nazivPravnogLica'], order['Kupac']['APRNazivPravnogLica'], order['Kupac']['Adresa'], order['Kupac']['Pib'], order['Kupac']['BrojTelefona'], order['Kupac']['Email'], order['Placanje'], order['Datum'],
+			row = [order['BrojPorudzbenice'], order['Kupac']['nazivPravnogLica'], order['Kupac']['APRNazivPravnogLica'], 
+				   order['Kupac']['Grad'], order['Kupac']['PostanskiBroj'], order['Kupac']['Ulica'],
+				   order['Kupac']['Pib'], order['Kupac']['FiksniTelefon'], order['Kupac']['MobilniTelefon'], order['Kupac']['Email'], order['Placanje'], order['Datum'],
 				   article['Id'], article['Cena'], article['Komada'], article['Iznos']]
 			write_sheet(row)
 
