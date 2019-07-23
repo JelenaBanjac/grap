@@ -15,7 +15,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(ROOT_DIR, "templates")
 LOGIN = "grap.noreply@gmail.com"
 PASSWORD = "grapbanjac38."
-LOGO_PATH = "assets/img/logo.png"
+LOGO_PATH = "assets/img/grap.png"
 
 app = Flask(__name__, template_folder=TEMPLATES_DIR)
 
